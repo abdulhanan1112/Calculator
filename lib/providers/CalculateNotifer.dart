@@ -27,11 +27,16 @@ class PostFixNotifier extends StateNotifier<String>            //Notifier Class
   void remove()
   {
     state="";
+    infix="";
   }
   void calculate() {
+    if(state.isEmpty)
+      {
+        return;
+      }
 
     String postfix = obj.postfix(infix);
-    print("Hy");
+
     double ans = obj.eval(postfix);
 
     state = obj.formatResult(ans);
@@ -42,7 +47,15 @@ class PostFixNotifier extends StateNotifier<String>            //Notifier Class
     {
       state='';
     }
+    if(state.isEmpty)
+      {
+        return;
+      }
     state = state.substring(0, state.length - 1);
+    if(infix.isEmpty)
+      {
+        return;
+      }
     if(obj.isOperator(infix[infix.length-1])) {
       infix =infix.substring(0, infix.length - 2);
     }
