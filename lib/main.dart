@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-
-import 'package:calculater/Home.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:calculater/screens/Home.dart';
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-
-    home:Home(),
-
+  runApp(ProviderScope(
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+    
+      home:Home(),
+    
+    ),
   ));
 }
 

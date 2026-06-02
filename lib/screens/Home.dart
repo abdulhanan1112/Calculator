@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:calculater/Buttons.dart';
-import 'package:calculater/PostFix.dart';
-
-class Home extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:calculater/providers/CalculateNotifer.dart';
+class Home extends ConsumerWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
-}
-
-Buttons buttons = Buttons();
-PostFix obj = PostFix();
-
-class _HomeState extends State<Home> {
-
-  @override
-  String infix="";
-  String input = '';
-  String init = '0';
-
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -34,11 +20,13 @@ class _HomeState extends State<Home> {
               flex: 3,
               child: Container(
                 alignment: Alignment.bottomRight,
-                child: Text(
-                  input.isEmpty ? init : input,
-                  style: TextStyle(color: Colors.white, fontSize: 70),
-                ),
+                child: Consumer(builder: (context,ref,child)
+                  {
+                    final input=ref.watch(calculatorProvider);
+                    return Text( input.isEmpty?'0':input,style: TextStyle(color: Colors.white, fontSize: 70),);
+                  }
               ),
+        )
             ),
             Divider(height: 1.0, thickness: 2, color: Colors.grey[200]),
             Expanded(
@@ -55,22 +43,13 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  input = input.substring(0, input.length - 1);
-                                  if(obj.isOperator(infix[infix.length-1])) {
-                                    infix =infix.substring(0, infix.length - 2);
-                                  }
-                                  else
-                                    {
-                                      infix =infix.substring(0, infix.length - 1);
-                                    }
-                                });
+                                ref.read(calculatorProvider.notifier).back();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[600],
                               ),
                               child: Text(
-                                '${buttons.del}',
+                                'D',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -84,16 +63,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  input = input.substring(0, 0);
-                                  infix = infix.substring(0, 0);
-                                });
+                                ref.read(calculatorProvider.notifier).remove();
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[600],
                               ),
                               child: Text(
-                                '${buttons.clr}',
+                                'C',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -107,17 +84,13 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  input += buttons.mod;
-                                  infix += buttons.mod;
-                                });
+                                ref.read(calculatorProvider.notifier).add('%');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.mod}',
+                                '%',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -131,17 +104,13 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  input += buttons.mul;
-                                  infix += buttons.mul;
-                                });
+                               ref.read(calculatorProvider.notifier).add('X');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.mul}',
+                                'X',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -161,16 +130,13 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  input += buttons.seven;
-                                  infix += buttons.seven;
-                                });
+                                ref.read(calculatorProvider.notifier).add('7');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.seven}',
+                                '7',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -183,16 +149,13 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.eight;
-                                  input += buttons.eight;
-                                });
+                                ref.read(calculatorProvider.notifier).add('8');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.eight}',
+                                '8',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -205,16 +168,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.nine;
-                                  input += buttons.nine;
-                                });
+                                ref.read(calculatorProvider.notifier).add('9');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.nine}',
+                                '9',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -227,17 +188,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  infix += buttons.div;
-                                  input += buttons.div;
-                                });
+                                ref.read(calculatorProvider.notifier).add('÷');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.div}',
+                                '÷',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -257,16 +215,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.four;
-                                  input += buttons.four;
-                                });
+                                ref.read(calculatorProvider.notifier).add('4');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.four}',
+                                '4',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -279,16 +235,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.five;
-                                  input += buttons.five;
-                                });
+                                ref.read(calculatorProvider.notifier).add('5');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.five}',
+                                '5',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -301,16 +255,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.six;
-                                  input += buttons.six;
-                                });
+                                ref.read(calculatorProvider.notifier).add('6');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.six}',
+                                '6',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -323,17 +275,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  infix+=buttons.sub;
-                                  input += buttons.sub;
-                                });
+                                ref.read(calculatorProvider.notifier).add('-');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.sub}',
+                                '-',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -353,16 +302,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.one;
-                                  input += buttons.one;
-                                });
+                                ref.read(calculatorProvider.notifier).add('1');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.one}',
+                                '1',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -375,16 +322,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.two;
-                                  input += buttons.two;
-                                });
+                                ref.read(calculatorProvider.notifier).add('2');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.two}',
+                                '2',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -397,16 +342,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.three;
-                                  input += buttons.three;
-                                });
+                                ref.read(calculatorProvider.notifier).add('3');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                               ),
                               child: Text(
-                                '${buttons.three}',
+                                '3',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -419,17 +362,14 @@ class _HomeState extends State<Home> {
                             width: 110,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  infix+=buttons.plus;
-                                  input += buttons.plus;
-                                });
+                                ref.read(calculatorProvider.notifier).add('+');
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.plus}',
+                                '+',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -449,68 +389,60 @@ class _HomeState extends State<Home> {
                             width: 220,
                             child: ElevatedButton(
                               onPressed: () {
-                                setState(() {
-                                  infix+=buttons.zero;
-                                  input += buttons.zero;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                              ),
-                              child: Text(
-                                '${buttons.zero}',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 80,
-                            width: 110,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  infix+=buttons.point;
-                                  input += buttons.point;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                              ),
-                              child: Text(
-                                '${buttons.point}',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 80,
-                            width: 110,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  infix+=',';
-                                  try {
-                                    String postFix = obj.postfix(infix);
-                                    double ans = obj.eval(postFix);
-                                    input = obj.formatResult(ans);
-                                  }
-                                  catch(e) {
-                                    input='Syntax Error';
+                                ref.read(calculatorProvider.notifier).add('0');
 
-                                  }
-                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                              ),
+                              child: Text(
+                                '0',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 80,
+                            width: 110,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                ref.read(calculatorProvider.notifier).add('.');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                              ),
+                              child: Text(
+                                '.',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 80,
+                            width: 110,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                try {
+
+                                  ref.read(calculatorProvider.notifier).calculate();
+                                }
+                                catch(e) {
+                                  ref.read(calculatorProvider.notifier).error();
+
+                                }
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[600],
                               ),
                               child: Text(
-                                '${buttons.equal}',
+                                '=',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,

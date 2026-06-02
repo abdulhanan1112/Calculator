@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PostFix {
 
   int preference(String a) {
-    if (a == '/' || a == '*' || a == '%') return 2;
+    if (a == '÷' || a == 'X' || a == '%') return 2;
     if (a == '+' || a == '-') return 1;
     return 0;
   }
@@ -14,14 +14,14 @@ class PostFix {
   }
   (String,int) tokenizer(String  s, int i)
   {
-  String ans = "";
-  while (s[i] != ',')
-  {
-  ans=ans+s[i];
-  i++;
-  }
-  ans= ans + ',';
-  return (ans,i);
+    String ans = "";
+    while (i<s.length && s[i] != ',')
+    {
+      ans=ans+s[i];
+      i++;
+    }
+    ans= ans + ',';
+    return (ans,i);
 
   }
 
@@ -41,10 +41,10 @@ class PostFix {
         double op1 = stack.removeLast();
 
         switch (ch) {
-          case '*':
+          case 'X':
             stack.add(op1 * op2);
             break;
-          case '/':
+          case '÷':
             stack.add(op1 / op2);
             break;
           case '+':
@@ -62,15 +62,15 @@ class PostFix {
 
     return stack.last;
   }
-bool isOperator(String s)
-{
-  if(s=="+"||s=="-"||s=="*"||s=="/"||s=="%")
+  bool isOperator(String s)
+  {
+    if(s=="+"||s=="-"||s=="X"||s=="÷"||s=="%")
     {
       return true;
     }
-  return false;
+    return false;
 
-}
+  }
   String formatResult(double value) {
     if ((value - value.round()).abs() < 0.0000001) {
       return value.round().toString();
@@ -105,3 +105,4 @@ bool isOperator(String s)
     return output.toString();
   }
 }
+
