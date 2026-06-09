@@ -7,13 +7,21 @@ PostFix obj = PostFix();
 
 class PostFixNotifier extends StateNotifier<String>            //Notifier Class
 {
+  bool _flag=false;
   String infix="";
   PostFixNotifier():super('');
   void add(String s)
   {
+    if(_flag)
+      {
+        state='';
+        infix='';
+        _flag=false;
+      }
     if(state=='Syntax Error')
       {
         state='';
+        infix='';
       }
     if(obj.isOperator(s))
       {
@@ -30,6 +38,7 @@ class PostFixNotifier extends StateNotifier<String>            //Notifier Class
     infix="";
   }
   void calculate() {
+    _flag=true;
     if(state.isEmpty)
       {
         return;
@@ -46,9 +55,11 @@ class PostFixNotifier extends StateNotifier<String>            //Notifier Class
     if(state=='Syntax Error')
     {
       state='';
+      infix='';
     }
     if(state.isEmpty)
       {
+        infix='';
         return;
       }
     state = state.substring(0, state.length - 1);
@@ -56,7 +67,7 @@ class PostFixNotifier extends StateNotifier<String>            //Notifier Class
       {
         return;
       }
-    if(obj.isOperator(infix[infix.length-1])) {
+    if(infix.length>1&&obj.isOperator(infix[infix.length-1])) {
       infix =infix.substring(0, infix.length - 2);
     }
     else
